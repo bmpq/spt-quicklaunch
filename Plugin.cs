@@ -24,8 +24,7 @@ public class Plugin : BaseUnityPlugin
         laboratory,
         Lighthouse,
         TarkovStreets,
-        Sandbox,
-        Sandbox_high
+        Sandbox
     }
 
     private void Start()
