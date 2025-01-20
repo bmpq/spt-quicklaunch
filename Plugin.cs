@@ -14,6 +14,7 @@ public class Plugin : BaseUnityPlugin
 
     internal enum MapId
     {
+        hideout,
         factory4_day,
         factory4_night,
         bigmap,

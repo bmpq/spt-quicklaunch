@@ -24,11 +24,17 @@ namespace quicklaunch
         }
 
         [PatchPostfix]
-        public static void Postfix(DefaultUIButton ____playButton)
+        public static void Postfix(DefaultUIButton ____playButton, DefaultUIButton ____hideoutButton)
         {
             if (!Plugin.Enabled.Value)
                 return;
 
+            if (Plugin.Map.Value == Plugin.MapId.hideout)
+            {
+                ____hideoutButton.OnClick.Invoke();
+                return;
+            }
+            
             ____playButton.OnClick.Invoke();
         }
     }
