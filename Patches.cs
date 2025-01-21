@@ -90,13 +90,8 @@ namespace quicklaunch
             if (!Plugin.Enabled.Value)
                 return;
 
-            Next(____acceptButton);
-        }
-
-        async static void Next(DefaultUIButton ____acceptButton)
-        {
-            await Task.Delay(100); // couldn't track why we need to wait just know that we have to
-            ____acceptButton.OnClick.Invoke();
+            // couldn't track why we need to wait just know that we have to
+            ____acceptButton.ClickAfterDelay(100);
         }
     }
 
@@ -108,18 +103,39 @@ namespace quicklaunch
         }
 
         [PatchPostfix]
-        public static void Postfix(DefaultUIButton ____readyButton)
+        public static void Postfix(DefaultUIButton ____changeSettingsButton, DefaultUIButton ____readyButton)
         {
             if (!Plugin.Enabled.Value)
                 return;
 
-            Next(____readyButton);
+            ____changeSettingsButton.ClickAfterDelay(100);
+            ____readyButton.ClickAfterDelay(400);
+        }
+    }
+
+    internal class PatchRaidSettingsWindow : ModulePatch
+    {
+        protected override MethodBase GetTargetMethod()
+        {
+            return AccessTools.Method(typeof(RaidSettingsWindow), nameof(RaidSettingsWindow.Show));
         }
 
-        async static void Next(DefaultUIButton ____readyButton)
+        [PatchPostfix]
+        public static void Postfix(DropDownBox ____aiAmountDropdown)
+        {
+            if (!Plugin.Enabled.Value)
+                return;
+
+            ____aiAmountDropdown.UpdateValue((int)Plugin.AIAmount.Value);
+        }
+    }
+
+    internal static class Extension
+    {
+        public async static void ClickAfterDelay(this DefaultUIButton button, int delay)
         {
             await Task.Delay(100);
-            ____readyButton.OnClick.Invoke();
+            button.OnClick.Invoke();
         }
     }
 }

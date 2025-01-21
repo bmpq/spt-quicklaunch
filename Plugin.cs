@@ -11,6 +11,7 @@ public class Plugin : BaseUnityPlugin
 
     internal static ConfigEntry<bool> Enabled;
     internal static ConfigEntry<MapId> Map;
+    internal static ConfigEntry<EFT.Bots.EBotAmount> AIAmount;
 
     internal enum MapId
     {
@@ -39,11 +40,13 @@ public class Plugin : BaseUnityPlugin
         new PatchLocationButton().Enable();
         new PatchMatchMakerSelectionLocationScreenShow().Enable();
         new PatchMatchMakerOfflineRaidScreenShow().Enable();
+        new PatchRaidSettingsWindow().Enable();
     }
 
     private void InitConfiguration()
     {
         Enabled = Config.Bind("General", "Enabled", true, "");
         Map = Config.Bind("General", "Map", MapId.factory4_day, "");
+        AIAmount = Config.Bind("General", "AI Amount", EFT.Bots.EBotAmount.AsOnline, "");
     }
 }
