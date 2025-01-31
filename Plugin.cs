@@ -10,6 +10,8 @@ public class Plugin : BaseUnityPlugin
     internal static new ManualLogSource Log;
 
     internal static ConfigEntry<bool> Enabled;
+    internal static ConfigEntry<bool> MinimizeOnGameLaunch;
+    internal static ConfigEntry<bool> ForceFullscreenOnRaidStart;
     internal static ConfigEntry<MapId> Map;
     internal static ConfigEntry<EFT.Bots.EBotAmount> AIAmount;
 
@@ -29,11 +31,15 @@ public class Plugin : BaseUnityPlugin
         Sandbox
     }
 
-    private void Start()
+    private void Awake()
     {
         Log = base.Logger;
 
         InitConfiguration();
+
+        new PatchMinimize().Enable();
+        new PatchMinimize2().Enable();
+        new PatchFullscreen().Enable();
 
         new PatchMenuScreenShow().Enable();
         new PatchMatchMakerSideSelectionScreenShow().Enable();
@@ -45,8 +51,12 @@ public class Plugin : BaseUnityPlugin
 
     private void InitConfiguration()
     {
-        Enabled = Config.Bind("General", "Enabled", true, "");
-        Map = Config.Bind("General", "Map", MapId.factory4_day, "");
-        AIAmount = Config.Bind("General", "AI Amount", EFT.Bots.EBotAmount.AsOnline, "");
+        Enabled = Config.Bind("_General_", "Enabled", true, "");
+
+        MinimizeOnGameLaunch = Config.Bind("Application", "Minimize on game launch", false, "");
+        ForceFullscreenOnRaidStart = Config.Bind("Application", "Force fullscreen on raid start", true, "");
+
+        Map = Config.Bind("Raid", "Map", MapId.factory4_day, "");
+        AIAmount = Config.Bind("Raid", "AI Amount", EFT.Bots.EBotAmount.AsOnline, "");
     }
 }
