@@ -4,7 +4,7 @@ using BepInEx.Logging;
 using EFT;
 using quicklaunch;
 
-[BepInPlugin("com.tarkin.quicklaunch", "quicklaunch", "1.0.0.0")]
+[BepInPlugin("com.tarkin.quicklaunch", "quicklaunch", "1.0.1.0")]
 public class Plugin : BaseUnityPlugin
 {
     internal static new ManualLogSource Log;
