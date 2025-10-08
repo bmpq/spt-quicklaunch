@@ -7,7 +7,7 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
-namespace quicklaunch
+namespace tarkin.quicklaunch
 {
     internal class Patch_ScenesPreset_ScenesResourceKeys : ModulePatch
     {

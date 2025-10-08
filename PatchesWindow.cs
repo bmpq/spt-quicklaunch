@@ -5,7 +5,7 @@ using SPT.Reflection.Patching;
 using System.Reflection;
 using UnityEngine;
 
-namespace quicklaunch
+namespace tarkin.quicklaunch
 {
     internal class PatchMinimize : ModulePatch
     {

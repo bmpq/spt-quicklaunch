@@ -5,6 +5,7 @@
     <AssemblyName>quicklaunch</AssemblyName>
     <Version>1.1.0</Version>
     <LangVersion>latest</LangVersion>
+    <RootNamespace>tarkin.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
   </PropertyGroup>
   
   <PropertyGroup>

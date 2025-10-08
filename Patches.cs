@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 
-namespace quicklaunch
+namespace tarkin.quicklaunch
 {
     internal class PatchMenuScreenShow : ModulePatch
     {
