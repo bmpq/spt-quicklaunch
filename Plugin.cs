@@ -15,6 +15,9 @@ public class Plugin : BaseUnityPlugin
     internal static ConfigEntry<MapId> Map;
     internal static ConfigEntry<EFT.Bots.EBotAmount> AIAmount;
 
+    internal static ConfigEntry<bool> SkipLoadingScenesEnabled;
+    internal static ConfigEntry<string> SkipLoadingScenes;
+
     internal enum MapId
     {
         hideout,
@@ -37,6 +40,8 @@ public class Plugin : BaseUnityPlugin
 
         InitConfiguration();
 
+        new Patch_ScenesPreset_ScenesResourceKeys().Enable();
+
         new PatchMinimize().Enable();
         new PatchMinimize2().Enable();
         new PatchFullscreen().Enable();
@@ -51,12 +56,14 @@ public class Plugin : BaseUnityPlugin
 
     private void InitConfiguration()
     {
-        Enabled = Config.Bind("_General_", "Enabled", true, "");
-
         MinimizeOnGameLaunch = Config.Bind("Application", "Minimize on game launch", false, "");
         ForceFullscreenOnRaidStart = Config.Bind("Application", "Force fullscreen on raid start", true, "");
 
-        Map = Config.Bind("Raid", "Map", MapId.factory4_day, "");
-        AIAmount = Config.Bind("Raid", "AI Amount", EFT.Bots.EBotAmount.AsOnline, "");
+        Enabled = Config.Bind("Auto-start raid", "_Enabled", false, "");
+        Map = Config.Bind("Auto-start raid", "Map", MapId.factory4_day, "");
+        AIAmount = Config.Bind("Auto-start raid", "AI Amount", EFT.Bots.EBotAmount.AsOnline, "");
+
+        SkipLoadingScenesEnabled = Config.Bind("Skip loading scenes", "_Enabled", false, "");
+        SkipLoadingScenes = Config.Bind("Skip loading scenes", "Scenes to skip", "Shopping_Mall_IDEA,Reserve_Base_Bunkers", "List of Unity scenes to skip loading, separated by comma");
     }
 }
