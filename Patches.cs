@@ -3,6 +3,7 @@ using EFT.HealthSystem;
 using EFT.InventoryLogic;
 using EFT.UI;
 using EFT.UI.Matchmaker;
+using EFT.UI.SessionEnd;
 using HarmonyLib;
 using SPT.Reflection.Patching;
 using System;
@@ -127,6 +128,23 @@ namespace tarkin.quicklaunch
                 return;
 
             ____aiAmountDropdown.UpdateValue((int)Plugin.AIAmount.Value);
+        }
+    }
+
+    internal class PatchSessionResultExitStatus : ModulePatch
+    {
+        protected override MethodBase GetTargetMethod()
+        {
+            return AccessTools.Method(typeof(SessionResultExitStatus), nameof(SessionResultExitStatus.Show), [typeof(SessionResultExitStatus.GClass3609)]);
+        }
+
+        [PatchPostfix]
+        public static void Postfix(DefaultUIButton ____mainMenuButton)
+        {
+            if (!Plugin.Enabled.Value)
+                return;
+
+            ____mainMenuButton.ClickAfterDelay(100);
         }
     }
 

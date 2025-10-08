@@ -1,7 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
-using quicklaunch;
 
 namespace tarkin.quicklaunch
 {
@@ -15,6 +14,8 @@ namespace tarkin.quicklaunch
         internal static ConfigEntry<bool> ForceFullscreenOnRaidStart;
         internal static ConfigEntry<MapId> Map;
         internal static ConfigEntry<EFT.Bots.EBotAmount> AIAmount;
+
+        internal static ConfigEntry<bool> SkipSessionEndScreen;
 
         internal static ConfigEntry<bool> SkipLoadingScenesEnabled;
         internal static ConfigEntry<string> SkipLoadingScenes;
@@ -53,6 +54,8 @@ namespace tarkin.quicklaunch
             new PatchMatchMakerSelectionLocationScreenShow().Enable();
             new PatchMatchMakerOfflineRaidScreenShow().Enable();
             new PatchRaidSettingsWindow().Enable();
+
+            new PatchSessionResultExitStatus().Enable();
         }
 
         private void InitConfiguration()
@@ -63,6 +66,7 @@ namespace tarkin.quicklaunch
             Enabled = Config.Bind("Auto-start raid", "_Enabled", false, "");
             Map = Config.Bind("Auto-start raid", "Map", MapId.factory4_day, "");
             AIAmount = Config.Bind("Auto-start raid", "AI Amount", EFT.Bots.EBotAmount.AsOnline, "");
+            SkipSessionEndScreen = Config.Bind("Auto-start raid", "Skip Session End Screen", true, "");
 
             SkipLoadingScenesEnabled = Config.Bind("Skip loading scenes", "_Enabled", false, "");
             SkipLoadingScenes = Config.Bind("Skip loading scenes", "Scenes to skip", "Shopping_Mall_IDEA,Reserve_Base_Bunkers", "List of Unity scenes to skip loading, separated by comma");
