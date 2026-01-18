@@ -18,13 +18,12 @@ namespace tarkin.quicklaunch
         internal static ConfigEntry<bool> SkipSessionEndScreen;
 
         internal static ConfigEntry<bool> SkipLoadingScenesEnabled;
-        internal static ConfigEntry<string> SkipLoadingScenes;
+        internal static ConfigEntry<string> EssentialSceneNameKeywords;
 
         internal enum MapId
         {
             hideout,
             factory4_day,
-            factory4_night,
             bigmap,
             RezervBase,
             Woods,
@@ -60,16 +59,20 @@ namespace tarkin.quicklaunch
 
         private void InitConfiguration()
         {
-            MinimizeOnGameLaunch = Config.Bind("Application", "Minimize on game launch", false, "");
-            ForceFullscreenOnRaidStart = Config.Bind("Application", "Force fullscreen on raid start", true, "");
+            const string CATAUTOSTART = "1. Autostart raid";
+            Enabled = Config.Bind(CATAUTOSTART, "- Enabled", false, "");
+            Map = Config.Bind(CATAUTOSTART, "Map", MapId.factory4_day, "");
+            AIAmount = Config.Bind(CATAUTOSTART, "AI Amount", EFT.Bots.EBotAmount.AsOnline, "");
 
-            Enabled = Config.Bind("Auto-start raid", "_Enabled", false, "");
-            Map = Config.Bind("Auto-start raid", "Map", MapId.factory4_day, "");
-            AIAmount = Config.Bind("Auto-start raid", "AI Amount", EFT.Bots.EBotAmount.AsOnline, "");
-            SkipSessionEndScreen = Config.Bind("Auto-start raid", "Skip Session End Screen", true, "");
+            SkipSessionEndScreen = Config.Bind("2. Raid end", "Skip Session End Screen", true, "");
 
-            SkipLoadingScenesEnabled = Config.Bind("Skip loading scenes", "_Enabled", false, "");
-            SkipLoadingScenes = Config.Bind("Skip loading scenes", "Scenes to skip", "Shopping_Mall_IDEA,Reserve_Base_Bunkers", "List of Unity scenes to skip loading, separated by comma");
+            SkipLoadingScenesEnabled = Config.Bind("3. Bare scene mode", "- Enabled", false, "You don't need this.");
+            EssentialSceneNameKeywords = Config.Bind("3. Bare scene mode", "Essential Scene Name Keywords",
+                "DesignMain, DesignStuff, AI, Scripts, Sound, Culling, Light",
+                "Only scenes that have these words in their name will be loaded");
+
+            MinimizeOnGameLaunch = Config.Bind("4. Application", "Minimize on game launch", false, "");
+            ForceFullscreenOnRaidStart = Config.Bind("4. Application", "Force fullscreen on raid start", false, "");
         }
     }
 }

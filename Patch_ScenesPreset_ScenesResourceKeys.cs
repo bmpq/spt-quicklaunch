@@ -16,43 +16,56 @@ namespace tarkin.quicklaunch
             return AccessTools.PropertyGetter(typeof(ScenesPreset), nameof(ScenesPreset.ScenesResourceKeys));
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051")]
         [PatchPrefix]
         private static bool PatchPrefix(ref SceneResourceKey[] __result, List<SceneResourceKey> ____scenesResourceKeys)
         {
-            string[] sceneNamesToSkip = Plugin.SkipLoadingScenes.Value
+            if (!Plugin.SkipLoadingScenesEnabled.Value)
+                return true;
+
+            string[] sceneNameKeywordsToKeep = Plugin.EssentialSceneNameKeywords.Value
                 .Split(',')
                 .Select(s => s.Trim())
                 .Where(s => !string.IsNullOrEmpty(s))
                 .ToArray();
 
-            if (sceneNamesToSkip.Length == 0)
+            if (sceneNameKeywordsToKeep.Length == 0)
             {
                 return true;
             }
 
             var scenesToKeep = new List<SceneResourceKey>();
-            var scenesThatWereSkipped = new List<SceneResourceKey>();
+            var scenesToSkip = new List<SceneResourceKey>();
 
             foreach (var scene in ____scenesResourceKeys)
             {
-                bool shouldSkip = sceneNamesToSkip.Any(nameToSkip =>
-                    scene.path.IndexOf(nameToSkip, StringComparison.OrdinalIgnoreCase) >= 0
-                );
+                string sceneName = System.IO.Path.GetFileNameWithoutExtension(scene.path);
 
-                if (shouldSkip)
+                bool shouldKeep = false;
+
+                foreach (var keyword in sceneNameKeywordsToKeep)
                 {
-                    scenesThatWereSkipped.Add(scene);
+                    if (sceneName.IndexOf(keyword, StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        shouldKeep = true;
+                        break;
+                    }
                 }
-                else
+
+                if (shouldKeep)
                 {
                     scenesToKeep.Add(scene);
                 }
+                else
+                {
+                    scenesToSkip.Add(scene);
+                }
             }
 
-            if (scenesThatWereSkipped.Any())
+            if (scenesToSkip.Any())
             {
-                Plugin.Log.LogInfo("tarkin.quicklaunch: Skipping the following scenes based on configuration:");
-                foreach (var skippedScene in scenesThatWereSkipped)
+                Plugin.Log.LogInfo($"{MyPluginInfo.PLUGIN_NAME}: Skipping the following scenes based on configuration:");
+                foreach (var skippedScene in scenesToSkip)
                 {
                     Plugin.Log.LogInfo($" - Skipped: {skippedScene.path}");
                 }

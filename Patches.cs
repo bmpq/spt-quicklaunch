@@ -135,13 +135,21 @@ namespace tarkin.quicklaunch
     {
         protected override MethodBase GetTargetMethod()
         {
-            return AccessTools.Method(typeof(SessionResultExitStatus), nameof(SessionResultExitStatus.Show), [typeof(SessionResultExitStatus.GClass3609)]);
+            return AccessTools.Method(typeof(SessionResultExitStatus), nameof(SessionResultExitStatus.Show), [
+                typeof(Profile),
+                typeof(LastPlayerStateClass),
+                typeof(ESideType),
+                typeof(ExitStatus),
+                typeof(TimeSpan),
+                typeof(ISession),
+                typeof(bool)
+                ]);
         }
 
         [PatchPostfix]
         public static void Postfix(DefaultUIButton ____mainMenuButton)
         {
-            if (!Plugin.Enabled.Value)
+            if (!Plugin.SkipSessionEndScreen.Value)
                 return;
 
             ____mainMenuButton.ClickAfterDelay(100);
