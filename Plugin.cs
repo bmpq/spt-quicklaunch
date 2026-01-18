@@ -10,15 +10,10 @@ namespace tarkin.quicklaunch
         internal static new ManualLogSource Log;
 
         internal static ConfigEntry<bool> Enabled;
-        internal static ConfigEntry<bool> MinimizeOnGameLaunch;
-        internal static ConfigEntry<bool> ForceFullscreenOnRaidStart;
         internal static ConfigEntry<MapId> Map;
         internal static ConfigEntry<EFT.Bots.EBotAmount> AIAmount;
 
         internal static ConfigEntry<bool> SkipSessionEndScreen;
-
-        internal static ConfigEntry<bool> SkipLoadingScenesEnabled;
-        internal static ConfigEntry<string> EssentialSceneNameKeywords;
 
         internal enum MapId
         {
@@ -32,7 +27,8 @@ namespace tarkin.quicklaunch
             laboratory,
             Lighthouse,
             TarkovStreets,
-            Sandbox
+            Sandbox,
+            Labyrinth
         }
 
         private void Awake()
@@ -40,12 +36,6 @@ namespace tarkin.quicklaunch
             Log = base.Logger;
 
             InitConfiguration();
-
-            new Patch_ScenesPreset_ScenesResourceKeys().Enable();
-
-            new PatchMinimize().Enable();
-            new PatchMinimize2().Enable();
-            new PatchFullscreen().Enable();
 
             new PatchMenuScreenShow().Enable();
             new PatchMatchMakerSideSelectionScreenShow().Enable();
@@ -65,14 +55,6 @@ namespace tarkin.quicklaunch
             AIAmount = Config.Bind(CATAUTOSTART, "AI Amount", EFT.Bots.EBotAmount.AsOnline, "");
 
             SkipSessionEndScreen = Config.Bind("2. Raid end", "Skip Session End Screen", true, "");
-
-            SkipLoadingScenesEnabled = Config.Bind("3. Bare scene mode", "- Enabled", false, "You don't need this.");
-            EssentialSceneNameKeywords = Config.Bind("3. Bare scene mode", "Essential Scene Name Keywords",
-                "DesignMain, DesignStuff, AI, Scripts, Sound, Culling, Light",
-                "Only scenes that have these words in their name will be loaded");
-
-            MinimizeOnGameLaunch = Config.Bind("4. Application", "Minimize on game launch", false, "");
-            ForceFullscreenOnRaidStart = Config.Bind("4. Application", "Force fullscreen on raid start", false, "");
         }
     }
 }
