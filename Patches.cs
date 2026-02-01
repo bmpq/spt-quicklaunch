@@ -66,6 +66,13 @@ namespace tarkin.quicklaunch
             if (!Plugin.Enabled.Value)
                 return;
 
+            if (Plugin.Map.Value == Plugin.MapId.Mod)
+            {
+                if (location.Id == Plugin.CustomMapName.Value)
+                    __instance.Select(true);
+                return;
+            }
+
             if (location.Id == Plugin.Map.Value.ToString())
             {
                 __instance.Select(true);

@@ -11,6 +11,7 @@ namespace tarkin.quicklaunch
 
         internal static ConfigEntry<bool> Enabled;
         internal static ConfigEntry<MapId> Map;
+        internal static ConfigEntry<string> CustomMapName;
         internal static ConfigEntry<EFT.Bots.EBotAmount> AIAmount;
 
         internal static ConfigEntry<bool> SkipSessionEndScreen;
@@ -28,7 +29,8 @@ namespace tarkin.quicklaunch
             Lighthouse,
             TarkovStreets,
             Sandbox,
-            Labyrinth
+            Labyrinth,
+            Mod
         }
 
         private void Awake()
@@ -54,7 +56,9 @@ namespace tarkin.quicklaunch
             Map = Config.Bind(CATAUTOSTART, "Map", MapId.factory4_day, "");
             AIAmount = Config.Bind(CATAUTOSTART, "AI Amount", EFT.Bots.EBotAmount.AsOnline, "");
 
-            SkipSessionEndScreen = Config.Bind("2. Raid end", "Skip Session End Screen", true, "");
+            CustomMapName = Config.Bind("2. Custom map", "Custom map name", "de_dust2", "Will try to load map with this name if MapID is set to 'Mod'");
+
+            SkipSessionEndScreen = Config.Bind("3. Raid end", "Skip Session End Screen", true, "");
         }
     }
 }
