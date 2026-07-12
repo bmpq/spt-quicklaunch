@@ -58,7 +58,7 @@ namespace tarkin.quicklaunch
                 return;
 
             location.Loot?.Clear();
-            Plugin.Logger.LogInfo("Disabled loot in this raid");
+            Plugin.Logger.LogWarning("Disabled loot in this raid");
         }
     }
 

@@ -2,6 +2,7 @@
 using BepInEx.Bootstrap;
 using BepInEx.Configuration;
 using BepInEx.Logging;
+using SPT.Reflection.Patching;
 
 namespace tarkin.quicklaunch
 {
@@ -15,6 +16,7 @@ namespace tarkin.quicklaunch
 
         internal static ConfigEntry<bool> LoadBots;
         internal static ConfigEntry<bool> LoadLoot;
+        internal static ConfigEntry<bool> OnlyEssentialScenes;
 
         internal static ConfigEntry<bool> SkipSessionEndScreen;
 
@@ -34,6 +36,8 @@ namespace tarkin.quicklaunch
             Labyrinth
         }
 
+        private PatchManager patchManager;
+
         private void Awake()
         {
             Logger = base.Logger;
@@ -46,22 +50,20 @@ namespace tarkin.quicklaunch
                 return;
             }
 
+            patchManager = new PatchManager(this, autoPatch: true);
+            patchManager.EnablePatches();
+
             InitConfiguration();
-
-            new Patch_TarkovApplication_OnApplicationLoaded().Enable();
-
-            new Patch_LocalGame_SpawnLoot().Enable();
-
-            new Patch_SessionResultExitStatus_Show().Enable();
         }
 
         private void InitConfiguration()
         {
-            Enabled = Config.Bind("1. Autostart", "Enable autostart", false, "");
+            Enabled = Config.Bind("1. Autostart", "Enable autostart", false, "Trigger auto start raid right after main menu load");
             Map = Config.Bind("1. Autostart", "Autostart map", MapId.factory4_day, "");
 
             LoadBots = Config.Bind("2. Loading", "Enable bots", true, "");
             LoadLoot = Config.Bind("2. Loading", "Enable loot", true, "Loads faster with no loot");
+            OnlyEssentialScenes = Config.Bind("2. Loading", "OnlyEssentialScenes", false, "Load only scenes that are required for the location to work");
 
             SkipSessionEndScreen = Config.Bind("3. Raid end", "Skip Session End Screen", true, "");
         }
