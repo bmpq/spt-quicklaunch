@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using BepInEx.Bootstrap;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 
@@ -7,12 +8,13 @@ namespace tarkin.quicklaunch
     [BepInPlugin("com.tarkin.quicklaunch", MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
     public class Plugin : BaseUnityPlugin
     {
-        internal static new ManualLogSource Log;
+        internal static new ManualLogSource Logger;
 
         internal static ConfigEntry<bool> Enabled;
         internal static ConfigEntry<MapId> Map;
-        internal static ConfigEntry<string> CustomMapName;
-        internal static ConfigEntry<EFT.Bots.EBotAmount> AIAmount;
+
+        internal static ConfigEntry<bool> LoadBots;
+        internal static ConfigEntry<bool> LoadLoot;
 
         internal static ConfigEntry<bool> SkipSessionEndScreen;
 
@@ -29,34 +31,35 @@ namespace tarkin.quicklaunch
             Lighthouse,
             TarkovStreets,
             Sandbox,
-            Labyrinth,
-            Mod
+            Labyrinth
         }
 
         private void Awake()
         {
-            Log = base.Logger;
+            Logger = base.Logger;
+
+            if (Chainloader.PluginInfos.ContainsKey("com.fika.core"))
+            {
+                Logger.LogError("Not compatible with Fika!");
+
+                Destroy(this);
+                return;
+            }
 
             InitConfiguration();
 
-            new PatchMenuScreenShow().Enable();
-            new PatchMatchMakerSideSelectionScreenShow().Enable();
-            new PatchLocationButton().Enable();
-            new PatchMatchMakerSelectionLocationScreenShow().Enable();
-            new PatchMatchMakerOfflineRaidScreenShow().Enable();
-            new PatchRaidSettingsWindow().Enable();
+            new Patch_TarkovApplication_OnApplicationLoaded().Enable();
 
-            new PatchSessionResultExitStatus().Enable();
+            new Patch_SessionResultExitStatus_Show().Enable();
         }
 
         private void InitConfiguration()
         {
-            const string CATAUTOSTART = "1. Autostart raid";
-            Enabled = Config.Bind(CATAUTOSTART, "- Enabled", false, "");
-            Map = Config.Bind(CATAUTOSTART, "Map", MapId.factory4_day, "");
-            AIAmount = Config.Bind(CATAUTOSTART, "AI Amount", EFT.Bots.EBotAmount.AsOnline, "");
+            Enabled = Config.Bind("1. Autostart", "- Enabled", false, "");
+            Map = Config.Bind("1. Autostart", "Map", MapId.factory4_day, "");
 
-            CustomMapName = Config.Bind("2. Custom map", "Custom map name", "de_dust2", "Will try to load map with this name if MapID is set to 'Mod'");
+            LoadBots = Config.Bind("2. Loading", "Enable bots", true, "");
+            LoadLoot = Config.Bind("2. Loading", "Enable loot", true, "Loads faster with no loot");
 
             SkipSessionEndScreen = Config.Bind("3. Raid end", "Skip Session End Screen", true, "");
         }
