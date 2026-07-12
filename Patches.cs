@@ -44,6 +44,24 @@ namespace tarkin.quicklaunch
         }
     }
 
+    internal class Patch_LocalGame_SpawnLoot : ModulePatch
+    {
+        protected override MethodBase GetTargetMethod()
+        {
+            return AccessTools.Method(typeof(LocalGame), nameof(LocalGame.method_12));
+        }
+
+        [PatchPrefix]
+        private static void PatchPrefix(LocationSettingsClass.Location location)
+        {
+            if (Plugin.LoadLoot.Value)
+                return;
+
+            location.Loot?.Clear();
+            Plugin.Logger.LogInfo("Disabled loot in this raid");
+        }
+    }
+
     internal class Patch_SessionResultExitStatus_Show : ModulePatch
     {
         protected override MethodBase GetTargetMethod()

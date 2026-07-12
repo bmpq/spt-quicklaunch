@@ -50,13 +50,15 @@ namespace tarkin.quicklaunch
 
             new Patch_TarkovApplication_OnApplicationLoaded().Enable();
 
+            new Patch_LocalGame_SpawnLoot().Enable();
+
             new Patch_SessionResultExitStatus_Show().Enable();
         }
 
         private void InitConfiguration()
         {
-            Enabled = Config.Bind("1. Autostart", "- Enabled", false, "");
-            Map = Config.Bind("1. Autostart", "Map", MapId.factory4_day, "");
+            Enabled = Config.Bind("1. Autostart", "Enable autostart", false, "");
+            Map = Config.Bind("1. Autostart", "Autostart map", MapId.factory4_day, "");
 
             LoadBots = Config.Bind("2. Loading", "Enable bots", true, "");
             LoadLoot = Config.Bind("2. Loading", "Enable loot", true, "Loads faster with no loot");
