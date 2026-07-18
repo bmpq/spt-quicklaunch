@@ -11,7 +11,7 @@ using ExitStatusScreenController = EFT.UI.SessionEnd.SessionResultExitStatus.GCl
 using ExitStatusScreenController = EFT.UI.SessionEnd.SessionResultExitStatus.ExitStatusScreenController;
 #endif
 
-namespace tarkin.quicklaunch
+namespace tarkin.raidloadingtweaks
 {
     internal class Patch_TarkovApplication_OnApplicationLoaded : ModulePatch
     {

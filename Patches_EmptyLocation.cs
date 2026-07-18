@@ -8,7 +8,7 @@ using EFT;
 using LoadScenesFromPresetOperation = GClass2287;
 #endif
 
-namespace tarkin.quicklaunch
+namespace tarkin.raidloadingtweaks
 {
     internal class Patches_EmptyLocation
     {

@@ -4,9 +4,9 @@ using BepInEx.Configuration;
 using BepInEx.Logging;
 using SPT.Reflection.Patching;
 
-namespace tarkin.quicklaunch
+namespace tarkin.raidloadingtweaks
 {
-    [BepInPlugin("com.tarkin.quicklaunch", MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
+    [BepInPlugin("com.tarkin.raidloadingtweaks", MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
     public class Plugin : BaseUnityPlugin
     {
         internal static new ManualLogSource Logger;
