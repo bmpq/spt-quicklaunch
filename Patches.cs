@@ -3,13 +3,7 @@ using HarmonyLib;
 using SPT.Reflection.Patching;
 using EFT;
 using EFT.UI.SessionEnd;
-
-#if SPT_4_0
-using MainMenuShowOperation = MainMenuControllerClass;
-using ExitStatusScreenController = EFT.UI.SessionEnd.SessionResultExitStatus.GClass3899;
-#elif SPT_4_1
-using ExitStatusScreenController = EFT.UI.SessionEnd.SessionResultExitStatus.ExitStatusScreenController;
-#endif
+using JsonType;
 
 namespace tarkin.raidloadingtweaks
 {
@@ -17,23 +11,18 @@ namespace tarkin.raidloadingtweaks
     {
         protected override MethodBase GetTargetMethod()
         {
-            return AccessTools.Method(typeof(TarkovApplication),
-#if SPT_4_0
-                nameof(TarkovApplication.method_38));
-#elif SPT_4_1
-                nameof(TarkovApplication.OnApplicationLoaded));
-#endif
+            return AccessTools.Method(typeof(TarkovApplication), nameof(TarkovApplication.OnApplicationLoaded));
         }
 
         [PatchPostfix]
-        public static void Postfix(MainMenuShowOperation ___mainMenuControllerClass)
+        public static void Postfix(MainMenuShowOperation ____menuOperation)
         {
             if (!Plugin.Enabled.Value)
                 return;
 
             if (Plugin.Map.Value == Plugin.MapId.hideout)
             {
-                ___mainMenuControllerClass.ShowScreen(EFT.UI.EMenuType.Hideout, turnOn: true);
+                ____menuOperation.ShowScreen(EFT.UI.EMenuType.Hideout, turnOn: true);
                 return;
             }
 
@@ -48,11 +37,11 @@ namespace tarkin.raidloadingtweaks
     {
         protected override MethodBase GetTargetMethod()
         {
-            return AccessTools.Method(typeof(LocalGame), nameof(LocalGame.method_12));
+            return AccessTools.Method(typeof(LocalGame), nameof(LocalGame.SpawnLoot));
         }
 
         [PatchPrefix]
-        private static void PatchPrefix(LocationSettingsClass.Location location)
+        private static void PatchPrefix(LocationSettings.Location location)
         {
             if (Plugin.LoadLoot.Value)
                 return;
@@ -66,16 +55,17 @@ namespace tarkin.raidloadingtweaks
     {
         protected override MethodBase GetTargetMethod()
         {
-            return AccessTools.Method(typeof(SessionResultExitStatus), nameof(SessionResultExitStatus.Show), [typeof(ExitStatusScreenController)]);
+            return AccessTools.Method(typeof(SessionResultExitStatus), nameof(SessionResultExitStatus.Show), 
+                [typeof(SessionResultExitStatus.ExitStatusScreenController)]);
         }
 
         [PatchPostfix]
-        public static void Postfix(ExitStatusScreenController ___ScreenController)
+        public static void Postfix(SessionResultExitStatus.ExitStatusScreenController controller)
         {
             if (!Plugin.SkipSessionEndScreen.Value)
                 return;
 
-            ___ScreenController.GoToMainMenu();
+            controller.GoToMainMenu();
         }
     }
 }

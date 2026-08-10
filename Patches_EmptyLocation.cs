@@ -4,10 +4,6 @@ using HarmonyLib;
 using SPT.Reflection.Patching;
 using EFT;
 
-#if SPT_4_0
-using LoadScenesFromPresetOperation = GClass2287;
-#endif
-
 namespace tarkin.raidloadingtweaks
 {
     internal class Patches_EmptyLocation
@@ -25,7 +21,7 @@ namespace tarkin.raidloadingtweaks
 
             protected override MethodBase GetTargetMethod()
             {
-                return AccessTools.Method(typeof(LoadScenesFromPresetOperation), nameof(LoadScenesFromPresetOperation.method_2));
+                return AccessTools.Method(typeof(LoadScenesFromPresetOperation), nameof(LoadScenesFromPresetOperation.ScenesLoadCoroutine));
             }
 
             [PatchPrefix]
