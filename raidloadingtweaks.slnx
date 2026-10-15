@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="SPT_4_1" />
+    <BuildType Name="SPT_5_0" />
+  </Configurations>
+  <Project Path="raidloadingtweaks.csproj" />
+</Solution>
