@@ -15,7 +15,7 @@ namespace tarkin.raidloadingtweaks
 {
     internal class Patches_EmptyLocation
     {
-        public class Patch_LoadScenesFromPresetOperation_ScenesLoadCoroutine : ModulePatch
+        public class Patch_ScenesPreset_ShouldLoadScene : ModulePatch
         {
             readonly static string[] Whitelist =
             {
@@ -28,35 +28,32 @@ namespace tarkin.raidloadingtweaks
 
             protected override MethodBase GetTargetMethod()
             {
-                return AccessTools.Method(typeof(LoadScenesFromPresetOperation), nameof(LoadScenesFromPresetOperation.ScenesLoadCoroutine));
+                return AccessTools.Method(typeof(ScenesPreset), nameof(ScenesPreset.ShouldLoadScene));
             }
 
-            [PatchPrefix]
-            private static void PatchPrefix(ref IList<ResourceKey> scenes)
+            [PatchPostfix]
+            private static void PatchPostfix(ISceneResource scene, ref bool __result)
             {
-                if (!Plugin.OnlyEssentialScenes.Value) return;
-
-                if (scenes == null || scenes.Count == 0)
-                {
+                if (!Plugin.OnlyEssentialScenes.Value)
                     return;
-                }
 
-                List<ResourceKey> filteredScenes = new List<ResourceKey>();
+                if (!__result)
+                    return;
 
-                foreach (ResourceKey scene in scenes)
+                if (scene is SceneResourceKey sceneKey)
                 {
-                    foreach (string suffix in Whitelist)
+                    foreach (var suffix in Whitelist)
                     {
-                        if (scene.path.EndsWith(suffix + ".unity", System.StringComparison.OrdinalIgnoreCase))
+                        if (sceneKey.path.EndsWith(suffix + ".unity", System.StringComparison.OrdinalIgnoreCase))
                         {
-                            filteredScenes.Add(scene);
-                            Plugin.Logger.LogWarning("Whitelisting scene: " + scene.path);
-                            break;
+                            __result = true;
+                            Plugin.Logger.LogWarning("Whitelisting scene: " + sceneKey.path);
+                            return;
                         }
                     }
                 }
 
-                scenes = filteredScenes;
+                __result = false; 
             }
         }
 
