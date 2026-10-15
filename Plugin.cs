@@ -1,13 +1,23 @@
 ﻿using BepInEx;
-using BepInEx.Bootstrap;
 using BepInEx.Configuration;
 using BepInEx.Logging;
+
+#if SPT_4_1
 using SPT.Reflection.Patching;
+#elif SPT_5_0
+using BepInEx.Unity.IL2CPP;
+using SPTushonka.Reflection.Patching;
+#endif
 
 namespace tarkin.raidloadingtweaks
 {
     [BepInPlugin("com.tarkin.raidloadingtweaks", MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
-    public class Plugin : BaseUnityPlugin
+    public class Plugin
+#if SPT_4_1
+        : BaseUnityPlugin
+#elif SPT_5_0
+        : BasePlugin
+#endif
     {
         internal static new ManualLogSource Logger;
 
@@ -38,17 +48,25 @@ namespace tarkin.raidloadingtweaks
 
         private PatchManager patchManager;
 
+#if SPT_4_1
         private void Awake()
+#elif SPT_5_0
+        public override void Load()
+#endif
         {
+#if SPT_4_1
             Logger = base.Logger;
 
-            if (Chainloader.PluginInfos.ContainsKey("com.fika.core"))
+            if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.fika.core"))
             {
                 Logger.LogError("Not compatible with Fika!");
 
                 Destroy(this);
                 return;
             }
+#elif SPT_5_0
+            Logger = base.Log;
+#endif
 
             patchManager = new PatchManager(this, autoPatch: true);
             patchManager.EnablePatches();

@@ -1,9 +1,14 @@
 ﻿using System.Reflection;
 using HarmonyLib;
+
+#if SPT_4_1
 using SPT.Reflection.Patching;
+#elif SPT_5_0
+using SPTushonka.Reflection.Patching;
+#endif
+
 using EFT;
 using EFT.UI.SessionEnd;
-using JsonType;
 
 namespace tarkin.raidloadingtweaks
 {
@@ -15,39 +20,23 @@ namespace tarkin.raidloadingtweaks
         }
 
         [PatchPostfix]
-        public static void Postfix(MainMenuShowOperation ____menuOperation)
+        public static void Postfix(TarkovApplication __instance)
         {
             if (!Plugin.Enabled.Value)
                 return;
 
             if (Plugin.Map.Value == Plugin.MapId.hideout)
             {
-                ____menuOperation.ShowScreen(EFT.UI.EMenuType.Hideout, turnOn: true);
+#if SPT_4_1
+                ((MainMenuShowOperation)AccessTools.Field(typeof(TarkovApplication), "_menuOperation").GetValue(__instance))
+#elif SPT_5_0
+                __instance._menuOperation
+#endif
+                    .ShowScreen(EFT.UI.EMenuType.Hideout, turnOn: true);
                 return;
             }
 
-            if (TarkovApplication.Exist(out var app))
-            {
-                app.InternalStartGame(Plugin.Map.Value.ToString(), isLocalGame: true, isBotEnabled: Plugin.LoadBots.Value);
-            }
-        }
-    }
-
-    internal class Patch_LocalGame_SpawnLoot : ModulePatch
-    {
-        protected override MethodBase GetTargetMethod()
-        {
-            return AccessTools.Method(typeof(LocalGame), nameof(LocalGame.SpawnLoot));
-        }
-
-        [PatchPrefix]
-        private static void PatchPrefix(LocationSettings.Location location)
-        {
-            if (Plugin.LoadLoot.Value)
-                return;
-
-            location.Loot?.Clear();
-            Plugin.Logger.LogWarning("Disabled loot in this raid");
+            __instance.InternalStartGame(Plugin.Map.Value.ToString(), isLocalGame: true, isBotEnabled: Plugin.LoadBots.Value);
         }
     }
 

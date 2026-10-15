@@ -1,7 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Reflection;
+﻿using System.Reflection;
 using HarmonyLib;
+
+#if SPT_4_1
+using System.Collections.Generic;
 using SPT.Reflection.Patching;
+#elif SPT_5_0
+using SPTushonka.Reflection.Patching;
+using Il2CppSystem.Collections.Generic;
+#endif
+
 using EFT;
 
 namespace tarkin.raidloadingtweaks
@@ -67,6 +74,24 @@ namespace tarkin.raidloadingtweaks
 
                 // crashes without this
                 __instance._navMeshDoorLinks = new List<NavMeshDoorLink>();
+            }
+        }
+
+        internal class Patch_LocalGame_SpawnLoot : ModulePatch
+        {
+            protected override MethodBase GetTargetMethod()
+            {
+                return AccessTools.Method(typeof(BaseLocalGame<EftGamePlayerOwner>), nameof(BaseLocalGame<EftGamePlayerOwner>.SpawnLoot));
+            }
+
+            [PatchPrefix]
+            private static void PatchPrefix(JsonType.LocationSettings.Location location)
+            {
+                if (Plugin.LoadLoot.Value)
+                    return;
+
+                location.Loot?.Clear();
+                Plugin.Logger.LogWarning("Disabled loot in this raid");
             }
         }
     }
